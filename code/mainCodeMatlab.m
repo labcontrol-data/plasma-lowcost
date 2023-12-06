@@ -33,6 +33,7 @@ grid on
 
 title('LDR curve')
 xlabel('volt');  ylabel('Lux');
+legend('real','simul.');
 
 savefile = sprintf('dataLDR_all.mat')
 save(savefile, 'vecVolt', 'vecLux', 'lux','-v7');
@@ -68,6 +69,7 @@ hold on
 plot(vecVolt,vecBit,'s');
 plot(vecVolt,bits,'r');
 grid on
+legend('real','simul.');
 
 title('Arduino Due - data Input')
 xlabel('volt');  ylabel('Bit');
@@ -102,6 +104,7 @@ hold on
 plot(vecBit,vecVolt,'s');
 plot(vecBit,volts,'r');
 grid on
+legend('real','simul.');
 
 title('Arduino Due - data Output')
 xlabel('Bit');  ylabel('volt');
@@ -131,12 +134,24 @@ for k=1:max(size(vecVoltageLux))
     end
 end
 
+
+c1 = polyfit(log(power),log(lux),3)
+c_power_to_lux = c1
+
+vecSimLux = [];
+for k=1:max(size(power))
+    n = power(k);
+    vecSimLux(k) = exp( c1(1)*log(n)^3  + c1(2)*log(n)^2 + c1(3)*log(n) + c1(4) );
+end
+
+
 figure(5)
-loglog(power,lux,['.','k'])
+loglog(power,lux,['.','k'],power,vecSimLux,['--','red'])
 grid on
 
 title('LDR curve')
 xlabel('power (watts)');  ylabel('Lux');
+legend('real','simul.');
 
 savefile = sprintf('dataPowerPlasma_all.mat')
-save(savefile, 'power', 'lux','-v7');
+save(savefile, 'power', 'lux','vecSimLux','-v7');
