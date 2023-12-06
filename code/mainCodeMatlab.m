@@ -1,0 +1,142 @@
+% Code: Matlab
+% Author: Alessandro N. Vargas (www.anvargas.com)
+% Code process experimental data and generates pictures
+% Code also creates polynomials (see the corresponding paper)
+% Last update: UC Berkeley, Dec 06, 2023
+
+
+
+clear all, close all, clc, format long, format compact,
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LDR data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+T = readtable("data_LDR_Nov_2023.xls");
+
+vecVolt = T.voltage;
+vecLux = T.lux;
+
+c1 = polyfit(log(vecVolt),log(vecLux),3)
+c_voltagelux_to_lux = c1;
+
+lux = [];
+for k=1:max(size(vecVolt))
+    v = vecVolt(k);
+    lux(k) = exp( c1(1)*log(v)^3 + c1(2)*log(v)^2 + c1(3)*log(v) + c1(4) );
+end
+
+
+figure(1)
+loglog(vecVolt,vecLux,['s','blue'],vecVolt,lux,['--','red'])
+axis([0 3 0 10000]) 
+grid on
+
+title('LDR curve')
+xlabel('volt');  ylabel('Lux');
+
+savefile = sprintf('dataLDR_all.mat')
+save(savefile, 'vecVolt', 'vecLux', 'lux','-v7');
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arduino data - Input
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+T = readtable("data_ArduinoDue_Input_Nov_2023.xls");
+
+vecBit = T.bit;
+
+vecVolt = T.volts;
+
+c_arduino_due_input_bit_to_volts = polyfit(vecBit,vecVolt,1)
+
+c = polyfit(vecVolt,vecBit,1);
+c_arduino_input = c
+
+
+
+bits = [];
+for k=1:max(size(vecVolt))
+    v = vecVolt(k);
+    bits(k) = c(1)*v + c(2) ;
+end
+
+
+figure(3)
+hold on
+plot(vecVolt,vecBit,'s');
+plot(vecVolt,bits,'r');
+grid on
+
+title('Arduino Due - data Input')
+xlabel('volt');  ylabel('Bit');
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arduino data - Output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+T = readtable("data_ArduinoDue_Output_Nov_2023.xls");
+
+vecBit = T.bit;
+
+vecVolt = T.volts;
+
+
+c_arduino_due_output_volts_to_bit = polyfit(vecVolt,vecBit,1)
+
+c = polyfit(vecBit,vecVolt,1);
+c_arduino_output = c
+
+volts = [];
+for k=1:max(size(vecBit))
+    b = vecBit(k);
+    volts(k) = c(1)*b + c(2) ;
+end
+
+
+figure(4)
+hold on
+plot(vecBit,vecVolt,'s');
+plot(vecBit,volts,'r');
+grid on
+
+title('Arduino Due - data Output')
+xlabel('Bit');  ylabel('volt');
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plasma reactor data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+T = readtable("dataPowerPlasma_Nov2023.xls");
+
+vecPower = cellfun(@str2num,T.power);
+
+vecVoltageLux = cellfun(@str2num,T.voltagelux);
+
+c1 = c_voltagelux_to_lux;
+lux = [];
+power = [];
+for k=1:max(size(vecVoltageLux))
+    
+    % if power is less than 2 watts, then it means the plasma was 'off'
+    if (vecPower(k) > 2)
+        v = vecVoltageLux(k);
+        temp = exp( c1(1)*log(v)^3 + c1(2)*log(v)^2 + c1(3)*log(v) + c1(4) );
+        lux = [lux temp];
+        power = [power vecPower(k)];
+    end
+end
+
+figure(5)
+loglog(power,lux,['.','k'])
+grid on
+
+title('LDR curve')
+xlabel('power (watts)');  ylabel('Lux');
+
+savefile = sprintf('dataPowerPlasma_all.mat')
+save(savefile, 'power', 'lux','-v7');
