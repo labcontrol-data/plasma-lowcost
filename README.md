@@ -57,7 +57,7 @@ Citation
 How to cite the data of this repository:
 
 ```
-@misc{vargasGithub2021,
+@misc{vargasGithub2023,
     author       = {A. N. Vargas},
     title        = {Data, source code, and documents for low-cost sensors and electronics for plasma experiments}},
     month        = {Dec},
