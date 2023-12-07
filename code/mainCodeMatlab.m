@@ -64,7 +64,7 @@ for k=1:max(size(vecVolt))
 end
 
 
-figure(3)
+figure(2)
 hold on
 plot(vecVolt,vecBit,'s');
 plot(vecVolt,bits,'r');
@@ -99,7 +99,7 @@ for k=1:max(size(vecBit))
 end
 
 
-figure(4)
+figure(3)
 hold on
 plot(vecBit,vecVolt,'s');
 plot(vecBit,volts,'r');
@@ -145,13 +145,14 @@ for k=1:max(size(power))
 end
 
 
-figure(5)
+figure(4)
 loglog(power,lux,['.','k'],power,vecSimLux,['--','red'])
 grid on
 
-title('LDR curve')
+title('power versus lux')
 xlabel('power (watts)');  ylabel('Lux');
-legend('real','simul.');
+legend('real','simul.');    
 
 savefile = sprintf('dataPowerPlasma_all.mat')
 save(savefile, 'power', 'lux','vecSimLux','-v7');
+
