@@ -13,7 +13,7 @@ This page provides information about the project developed at Mesbah lab, UC Ber
 
 [![DOI](https://zenodo.org/badge/577329848.svg)](https://zenodo.org/badge/latestdoi/577329848)
 
-**Please check more details about this project in the page detailing the ["Deadbeat condition for the control design of RLC Oscillator."](http://www.anvargas.com/blog/rlcoscillator.html)**
+**Please check more details about this project in the page detailing the ["(link soon)"](http://www.anvargas.com/blog/rlcoscillator.html)**
 
 
 `mainCodeMatlab.m` is a MATLAB(R) script that calls Matlab and generates simulation data. The script also generates figures. The figures contain both simulation and real-time data collected in a laboratory testbed.
