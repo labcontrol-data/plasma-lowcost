@@ -5,7 +5,6 @@
 % Last update: UC Berkeley, Dec 06, 2023
 
 
-
 clear all, close all, clc, format long, format compact,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -156,3 +155,31 @@ legend('real','simul.');
 savefile = sprintf('dataPowerPlasma_all.mat')
 save(savefile, 'power', 'lux','vecSimLux','-v7');
 
+load("data_UC_Berkeley_DCPlasma_IlluminiscencePaper_Set21_2024.mat")
+
+vecCurrent = B(50000:end-500)/10;
+vecVolt = A(50000:end-500);
+vecPower = 1000*vecVolt.*vecCurrent;
+vecU = vecVolt + vecCurrent*120;
+
+figure(5)
+subplot(4,1,1)
+plot(Tinterval*[1:max(size(vecVolt))],vecU,'g')
+ylabel('Volt (kV')
+grid
+subplot(4,1,2)
+plot(Tinterval*[1:max(size(vecVolt))],vecVolt,'b')
+ylabel('Volt (kV)')
+grid
+subplot(4,1,3)
+plot(Tinterval*[1:max(size(vecVolt))],vecCurrent,'r'),
+ylabel('Current (A)')
+grid
+subplot(4,1,4)
+plot(Tinterval*[1:max(size(vecVolt))],vecPower,'k')
+ylabel('Power (W)')
+hold off
+grid on
+
+savefile = sprintf('dataPowerPlasma_all_Set_2024.mat')
+save(savefile, 'vecU','vecVolt','vecCurrent','vecPower','-v7');
